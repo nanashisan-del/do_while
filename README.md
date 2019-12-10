@@ -11,6 +11,14 @@
 7. ニンテンドースイッチとマイコンを繋げる
 8. Done
 
+#### reference
+- [NintendoSwitchをPCから操作する](https://blog.feelmy.net/control-nintendo-switch-from-computer/)
+- [ゼルダの雪玉ボウル自動化](https://github.com/bertrandom/snowball-thrower)
+- [【剣盾】無限ワット自動化スレ >>131](https://medaka.5ch.net/test/read.cgi/poke/1574816324/131)
+- [Switch「ゼノブレイド2」でマクロを実行してみよう](http://gamemos.blog.jp/archives/6608328.html)
+- [dfu-programmer で Arduino UNO の ATmega16U2 に Windows から書き込む](https://another.maple4ever.net/archives/2380/)
+- [Switch版DEAD OR ALIVE Xtreme3 Scarlet (DOAX3S) 自動プレイ](https://randdtips.com/switch-doax3s-autoplay/)
+
 #### Note
 - L stick の上下左右をホールド出来る
     - HOLD_CLEAR で解除するまで続く
