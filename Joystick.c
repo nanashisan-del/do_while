@@ -301,8 +301,6 @@ typedef enum {
 	SYNC_POSITION,
 	BREATHE,
 	PROCESS,
-	CLEANUP,
-	DONE
 } State_t;
 State_t state = SYNC_CONTROLLER;
 
