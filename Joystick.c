@@ -31,9 +31,7 @@ typedef enum {
 	B,
 	L,
 	R,
-	THROW,
-	NOTHING,
-	TRIGGERS
+	NOTHING
 } Buttons_t;
 
 typedef struct {
@@ -298,7 +296,6 @@ void HID_Task(void) {
 
 typedef enum {
 	SYNC_CONTROLLER,
-	SYNC_POSITION,
 	BREATHE,
 	PROCESS,
 } State_t;
@@ -337,21 +334,7 @@ void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
 	// States and moves management
 	switch (state)
 	{
-
 		case SYNC_CONTROLLER:
-			state = BREATHE;
-			break;
-
-		case SYNC_POSITION:
-			bufindex = 0;
-
-			ReportData->Button = 0;
-			ReportData->LX = STICK_CENTER;
-			ReportData->LY = STICK_CENTER;
-			ReportData->RX = STICK_CENTER;
-			ReportData->RY = STICK_CENTER;
-			ReportData->HAT = HAT_CENTER;
-
 			state = BREATHE;
 			break;
 
@@ -388,15 +371,6 @@ void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
 
 				case R:
 					ReportData->Button |= SWITCH_R;
-					break;
-
-				case THROW:
-					ReportData->LY = STICK_MIN;				
-					ReportData->Button |= SWITCH_R;
-					break;
-
-				case TRIGGERS:
-					ReportData->Button |= SWITCH_L | SWITCH_R;
 					break;
 
 				default:
