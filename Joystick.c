@@ -61,26 +61,98 @@ static const command step[] = {
   // ここまでコントローラーを認識させるおまじない
 
   // Start
-  { HOLD_UP,    0 },
-  { HOLD_RIGHT, 0 },
+
   // 初期設定など1回だけ動かしたいコードはここまで
 
   // loop Start
   { LOOP_START, 0 },
   // これより下を無限ループ
 
-  { A,          2 },
-  { NOTHING,   20 },
-  { A,          2 },
-  { NOTHING,   20 },
-  { A,          2 },
-  { NOTHING,   30 },
-  { A,          2 },
-  { NOTHING,   30 },
-  { B,          2 },
+  { A,          2 }, // ワット回収
   { NOTHING,   10 },
   { B,          2 },
   { NOTHING,   10 },
+  { B,          2 },
+  { NOTHING,  120 },
+  { B,          2 },
+  { NOTHING,   20 }, // レイド閉じる
+
+  { HOME,       5 }, // Home
+  { NOTHING,   15 },
+  { DOWN,       2 },
+  { NOTHING,    1 },
+  { RIGHT,      2 },
+  { NOTHING,    1 },
+  { RIGHT,      2 },
+  { NOTHING,    1 },
+  { RIGHT,      2 },
+  { NOTHING,    1 },
+  { RIGHT,      2 },
+  { NOTHING,    1 },
+  { A,          2 }, // 設定選択
+  { NOTHING,    5 },
+
+  { DOWN,      80 },
+
+  { A,          2 }, // 設定>本体 選択
+  { NOTHING,    5 },
+
+  { DOWN,       2 },
+  { NOTHING,    2 },
+  { DOWN,       2 },
+  { NOTHING,    2 },
+  { DOWN,       2 },
+  { NOTHING,    2 },
+  { DOWN,       2 },
+  { NOTHING,    2 },
+  { A,          2 }, // 日付と時刻選択
+  { NOTHING,   10 },
+
+  { DOWN,       2 },
+  { NOTHING,    1 },
+  { DOWN,       2 },
+  { NOTHING,    1 },
+  { A,          2 }, // 現在の日付と時刻
+  { NOTHING,    5 },
+
+  { DOWN,       5 }, // 年号1つもどす
+  { NOTHING,    1 },
+  { A,          2 },
+  { NOTHING,    1 },
+  { A,          2 },
+  { NOTHING,    1 },
+  { A,          2 },
+  { NOTHING,    1 },
+  { A,          2 },
+  { NOTHING,    1 },
+  { A,          2 },
+  { NOTHING,    1 },
+  { A,          2 }, // 日付 OK
+  { NOTHING,    5 },
+
+  { A,          2 },
+  { NOTHING,    1 },
+  { LEFT,      30 },
+  { NOTHING,    1 },
+  { UP,         2 }, // 年号1つすすめる
+  { NOTHING,    1 },
+  { A,          2 },
+  { NOTHING,    1 },
+  { A,          2 },
+  { NOTHING,    1 },
+  { A,          2 },
+  { NOTHING,    1 },
+  { A,          2 },
+  { NOTHING,    1 },
+  { A,          2 },
+  { NOTHING,    1 },
+  { A,          2 }, // 日付 OK
+  { NOTHING,    5 },
+
+  { HOME,       2 },  // ゲームに戻る
+  { NOTHING,   30 },
+  { HOME,       2 },
+  { NOTHING,   30 },
 };
 
 // Main entry point.
@@ -220,7 +292,6 @@ int duration_count = 0;
 int loop_start_step = 0;
 
 void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
-
   // Prepare an empty report
   memset(ReportData, 0, sizeof(USB_JoystickReport_Input_t));
   ReportData->LX = STICK_CENTER;
@@ -246,8 +317,8 @@ void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
   switch (state)
   {
     case SYNC_CONTROLLER:
-	  loop_start_step = find_loop_start_step();
-	  state = PROCESS;
+			loop_start_step = find_loop_start_step();
+			state = PROCESS;
       break;
 
     case PROCESS:
