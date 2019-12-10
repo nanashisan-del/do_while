@@ -1,7 +1,28 @@
 ## timewalk-with-watt
---- 編集中 ---
+--- 編集中 / now writing ---
 
 #### How to use
+hoge
+
+#### Note
+- L stick の上下左右をホールド出来る
+    - HOLD_CLEAR で解除するまで続く
+    - duration（時間）は0でよい
+- R stick の左右をホールド出来る
+    - HOLD_CAM_C で解除するまで続く
+    - duration（時間）は0でよい
+- UPLEFT 他は [>>325](https://medaka.5ch.net/test/read.cgi/poke/1574816324/325)
+ [>>416](https://medaka.5ch.net/test/read.cgi/poke/1574816324/416)
+ との互換性を保つものである
+- コントローラーを認識させるのに先頭2行を捨てている
+    - どうしてそうなるかは知らん
+- LOOP_START は無限ループの起点
+- UP 他はスティック操作のため入力が正確でない可能性がある
+- フォーク元の未使用コードについては削除した
+    - ただし echo については既存のコマンドを再利用することを考慮して残した
+    - （duration 時間が3倍速く動くのでズレるため）
+- 月末31日を1日に変更する際には時間が戻るが、次のループでリカバリするので問題ない
+    - （2月についても同様）
 
 #### Compiling and Flashing onto the Teensy 2.0++
 Go to the Teensy website and download/install the [Teensy Loader application](https://www.pjrc.com/teensy/loader.html). For Linux, follow their instructions for installing the [GCC Compiler and Tools](https://www.pjrc.com/teensy/gcc.html). For Windows, you will need the [latest AVR toolchain](http://www.atmel.com/tools/atmelavrtoolchainforwindows.aspx) from the Atmel site. See [this issue](https://github.com/LightningStalker/Splatmeme-Printer/issues/10) and [this thread](http://gbatemp.net/threads/how-to-use-shinyquagsires-splatoon-2-post-printer.479497/) on GBAtemp for more information. (Note for Mac users - the AVR MacPack is now called AVR CrossPack. If that does not work, you can try installing `avr-gcc` with `brew`.)
