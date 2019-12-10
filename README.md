@@ -1,6 +1,10 @@
 ## timewalk-with-watt
 --- 編集中 / now writing ---
 
+#### What we need
+- マイコン本体 ATmega32u4 など [example](https://www.amazon.co.jp/dp/B07GKR9J4N/)
+- micro USBケーブル [example](https://www.amazon.co.jp/dp/B0711PVX6Z/)
+
 #### How to use
 1. このレポジトリを clone download する
 2. [lufa](https://github.com/abcminiuser/lufa/) を lufa フォルダに入れる
@@ -11,7 +15,7 @@
 7. ニンテンドースイッチとマイコンを繋げる
 8. Done
 
-#### reference
+#### Reference
 - [NintendoSwitchをPCから操作する](https://blog.feelmy.net/control-nintendo-switch-from-computer/)
 - [ゼルダの雪玉ボウル自動化](https://github.com/bertrandom/snowball-thrower)
 - [【剣盾】無限ワット自動化スレ >>131](https://medaka.5ch.net/test/read.cgi/poke/1574816324/131)
