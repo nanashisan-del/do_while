@@ -33,6 +33,7 @@ typedef enum {
 	R,
     PLUS,
     HOME,
+    ROOP_START,
 	NOTHING
 } Buttons_t;
 
@@ -161,6 +162,12 @@ void HID_Task(void) {
 	}
 }
 
+int find_roop_start_step(void){
+    for(int i=0;step[i].button!="ROOP_START";i++){
+        return i;
+    }
+}
+
 typedef enum {
 	SYNC_CONTROLLER,
 	BREATHE,
@@ -177,7 +184,7 @@ int xpos = 0;
 int ypos = 0;
 int bufindex = 0;
 int duration_count = 0;
-int portsval = 0;
+int roop_start_step = find_roop_start_step();
 
 // Prepare the next report for the host.
 void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
@@ -268,7 +275,7 @@ void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
 
 			if (bufindex > (int)( sizeof(step) / sizeof(step[0])) - 1)
 			{
-				bufindex = 7;
+				bufindex = roop_start_step;
 				duration_count = 0;
 
 				state = BREATHE;
