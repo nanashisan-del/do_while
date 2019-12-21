@@ -15,33 +15,16 @@
 7. ニンテンドースイッチとマイコンを繋げる
 8. Done
 
-#### Reference
-- [NintendoSwitchをPCから操作する](https://blog.feelmy.net/control-nintendo-switch-from-computer/)
-- [ゼルダの雪玉ボウル自動化](https://github.com/bertrandom/snowball-thrower)
-- [【剣盾】無限ワット自動化スレ >>131](https://medaka.5ch.net/test/read.cgi/poke/1574816324/131)
-- [Switch「ゼノブレイド2」でマクロを実行してみよう](http://gamemos.blog.jp/archives/6608328.html)
-- [dfu-programmer で Arduino UNO の ATmega16U2 に Windows から書き込む](https://another.maple4ever.net/archives/2380/)
-- [Switch版DEAD OR ALIVE Xtreme3 Scarlet (DOAX3S) 自動プレイ](https://randdtips.com/switch-doax3s-autoplay/)
-
 #### Note
-- L stick の上下左右をホールド出来る
-    - HOLD_CLEAR で解除するまで続く
-    - duration（時間）は0でよい
-- R stick の左右をホールド出来る
-    - HOLD_CAM_C で解除するまで続く
-    - duration（時間）は0でよい
-- UPLEFT 他は [>>325](https://medaka.5ch.net/test/read.cgi/poke/1574816324/325)
- [>>416](https://medaka.5ch.net/test/read.cgi/poke/1574816324/416)
- との互換性を保つものである
-- コントローラーを認識させるのに先頭2行を捨てている
-    - どうしてそうなるかは知らん
-- LOOP_START は無限ループの起点
-- UP 他はスティック操作のため入力が正確でない可能性がある
-- フォーク元の未使用コードについては削除した
-    - ただし echo については既存のコマンドを再利用することを考慮して残した
-    - （duration 時間が3倍速く動くのでズレるため）
-- 月末31日を1日に変更する際には時間が戻るが、次のループでリカバリするので問題ない
-    - （2月についても同様）
+- fork元にゴリ押しでDO WHILE的なものを実装
+    - WHILEのdurationで指定した回数ループが実行される感じにした
+    - DO WHILEのコマンド時は一旦NOTHING扱いになる(はず)ので注意
+
+    - 入れ子には一応対応するが入れ子の最大数は"#define MAX_NEST"で定義された値以下にすること
+    - デフォルトは5段まで
+    - それ以上の入れ子を作った場合は知らない
+    - DOとWHILEが対になってない場合も知らない
+- 初期状態のマクロは意味のあるものは入ってないので注意
 
 #### Compiling and Flashing onto the Teensy 2.0++
 Go to the Teensy website and download/install the [Teensy Loader application](https://www.pjrc.com/teensy/loader.html). For Linux, follow their instructions for installing the [GCC Compiler and Tools](https://www.pjrc.com/teensy/gcc.html). For Windows, you will need the [latest AVR toolchain](http://www.atmel.com/tools/atmelavrtoolchainforwindows.aspx) from the Atmel site. See [this issue](https://github.com/LightningStalker/Splatmeme-Printer/issues/10) and [this thread](http://gbatemp.net/threads/how-to-use-shinyquagsires-splatoon-2-post-printer.479497/) on GBAtemp for more information. (Note for Mac users - the AVR MacPack is now called AVR CrossPack. If that does not work, you can try installing `avr-gcc` with `brew`.)

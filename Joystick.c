@@ -46,6 +46,8 @@ typedef enum {
   PLUS,
   HOME,
   LOOP_START,
+  DO,
+  WHILE,
   NOTHING
 } Buttons_t;
 
@@ -63,96 +65,53 @@ static const command step[] = {
   // Start
 
   // 初期設定など1回だけ動かしたいコードはここまで
+  { DO,         0 }, //ループ区間開始
+    { X,         50 }, //ループ区間
+    { NOTHING,   50 }, //ループ区間
+  { WHILE,      6 }, //durationで指定した回数ループ区間を実行 この場合Xが6回押される
 
   // loop Start
   { LOOP_START, 0 },
   // これより下を無限ループ
+  { DO,         0 },
+    { A,         50 },
+    { NOTHING,   50 },
+  { WHILE,      0 }, //durationが0のときは1とみなす この場合Aが1回押される DO WHILEを置く意味はない
 
-  { A,          2 }, // ワット回収
-  { NOTHING,   10 },
-  { B,          2 },
-  { NOTHING,   10 },
-  { B,          2 },
-  { NOTHING,  120 },
-  { B,          2 },
-  { NOTHING,   20 }, // レイド閉じる
+  { DO,         0 },
+    { B,         50 },
+    { NOTHING,   50 },
+  { WHILE,      1 }, //Bが一回押される DO WHILEを置く意味はない
 
-  { HOME,       5 }, // Home
-  { NOTHING,   15 },
-  { DOWN,       2 },
-  { NOTHING,    1 },
-  { RIGHT,      2 },
-  { NOTHING,    1 },
-  { RIGHT,      2 },
-  { NOTHING,    1 },
-  { RIGHT,      2 },
-  { NOTHING,    1 },
-  { RIGHT,      2 },
-  { NOTHING,    1 },
-  { A,          2 }, // 設定選択
-  { NOTHING,    5 },
+  { DO,         0 },
+    { X,         50 },
+    { NOTHING,   50 },
+  { WHILE,      2 }, //この場合 Xが2回押される
 
-  { DOWN,      80 },
+  { DO,         0 }, //入れ子にも一応対応 MAX_NEST以上の深さにしないこと
+    { X,         50 }, //メニュー開く
+    { NOTHING,   50 },
 
-  { A,          2 }, // 設定>本体 選択
-  { NOTHING,    5 },
+    { DO,         0 },
+      { DO,        0 },
+        { RIGHT,     5 }, 
+        { NOTHING,   50 },
+      { WHILE,     2 }, //右 2回
+      { DO,        0 },
+        { UP,        5 },
+        { NOTHING,   50 },
+        { DOWN,      5 },
+        { NOTHING,   50 },
+      { WHILE,     5 }, //上下5回
+      { DO,        0 },
+        { LEFT,      5 },
+        { NOTHING,   50 },
+      { WHILE,     3 }, //左 3回
+    { WHILE,      3 }, //セットで3回 (→x2 (↑↓)x5 ←x3)x3
 
-  { DOWN,       2 },
-  { NOTHING,    2 },
-  { DOWN,       2 },
-  { NOTHING,    2 },
-  { DOWN,       2 },
-  { NOTHING,    2 },
-  { DOWN,       2 },
-  { NOTHING,    2 },
-  { A,          2 }, // 日付と時刻選択
-  { NOTHING,   10 },
-
-  { DOWN,       2 },
-  { NOTHING,    1 },
-  { DOWN,       2 },
-  { NOTHING,    1 },
-  { A,          2 }, // 現在の日付と時刻
-  { NOTHING,    5 },
-
-  { DOWN,       5 }, // 年号1つもどす
-  { NOTHING,    1 },
-  { A,          2 },
-  { NOTHING,    1 },
-  { A,          2 },
-  { NOTHING,    1 },
-  { A,          2 },
-  { NOTHING,    1 },
-  { A,          2 },
-  { NOTHING,    1 },
-  { A,          2 },
-  { NOTHING,    1 },
-  { A,          2 }, // 日付 OK
-  { NOTHING,    5 },
-
-  { A,          2 },
-  { NOTHING,    1 },
-  { LEFT,      30 },
-  { NOTHING,    1 },
-  { UP,         2 }, // 年号1つすすめる
-  { NOTHING,    1 },
-  { A,          2 },
-  { NOTHING,    1 },
-  { A,          2 },
-  { NOTHING,    1 },
-  { A,          2 },
-  { NOTHING,    1 },
-  { A,          2 },
-  { NOTHING,    1 },
-  { A,          2 },
-  { NOTHING,    1 },
-  { A,          2 }, // 日付 OK
-  { NOTHING,    5 },
-
-  { HOME,       2 },  // ゲームに戻る
-  { NOTHING,   30 },
-  { HOME,       2 },
-  { NOTHING,   30 },
+    { X,         50 }, //メニュー閉じる
+    { NOTHING,   50 },
+  { WHILE,      4 }, //この場合 Xが2回押される
 };
 
 // Main entry point.
@@ -291,7 +250,13 @@ int bufindex = 0;
 int duration_count = 0;
 int loop_start_step = 0;
 
+#define MAX_NEST 5
+int do_nest_num = 0;
+int do_index[MAX_NEST];
+int loop_counter[MAX_NEST];
+
 void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
+  bool do_or_while = false;
   // Prepare an empty report
   memset(ReportData, 0, sizeof(USB_JoystickReport_Input_t));
   ReportData->LX = STICK_CENTER;
@@ -421,18 +386,44 @@ void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
           ReportData->Button |= SWITCH_HOME;
           break;
 
+        case DO:
+          do_index[do_nest_num] = bufindex;
+          loop_counter[do_nest_num] = 0;
+          do_nest_num++;
+
+          bufindex++;
+          duration_count = 0; //念の為
+          do_or_while = true;
+          break;
+
+        case WHILE:
+          loop_counter[do_nest_num - 1]++;
+          if(step[bufindex].duration > loop_counter[do_nest_num - 1]){
+            bufindex = do_index[do_nest_num - 1] + 1; //DOは無視
+            duration_count = 0; //念の為
+          }
+          else{
+            bufindex++;
+            loop_counter[do_nest_num - 1] = 0; //念の為
+            do_nest_num--;
+            duration_count = 0; //念の為
+          }
+          do_or_while = true;
+          break;
+
         default:
           break;
       }
 
-    duration_count++;
+    if(!do_or_while){
+      duration_count++;
 
-    if (duration_count > step[bufindex].duration)
-    {
-      bufindex++;
-      duration_count = 0;
+      if (duration_count > step[bufindex].duration)
+      {
+        bufindex++;
+        duration_count = 0;
+      }
     }
-
 
     if (bufindex > (int)( sizeof(step) / sizeof(step[0])) - 1)
     {
